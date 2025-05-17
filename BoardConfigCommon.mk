@@ -1,4 +1,3 @@
-
 # Copyright (C) 2018 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+BUILD_BROKEN_DUP_RULES := true
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
+BUILD_BROKEN_INCORRECT_PARTITION_IMAGES := true
 
 BOARD_VENDOR := oneplus
 
@@ -43,6 +46,7 @@ BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_CMDLINE := \
     androidboot.configfs=true \
     androidboot.hardware=qcom \
+    androidboot.console=ttyMSM0 \
     androidboot.usbcontroller=a600000.dwc3 \
     ehci-hcd.park=3 \
     firmware_class.path=/vendor/firmware_mnt/image \
@@ -74,9 +78,11 @@ TARGET_VENDOR_PROP += $(COMMON_PATH)/vendor.prop
 BOARD_VNDK_VERSION := current
 
 # A/B
+AB_OTA_UPDATER := true
 AB_OTA_PARTITIONS += \
     boot \
     dtbo \
+    odm \
     system \
     vbmeta \
     vendor
@@ -96,6 +102,8 @@ USE_CUSTOM_AUDIO_POLICY := 1
 # Display
 TARGET_SCREEN_DENSITY := 450
 TARGET_USES_FOD_ZPOS := true
+TARGET_USES_GRALLOC1 := true
+TARGET_USES_HWC2 := true
 
 # DRM
 TARGET_ENABLE_MEDIADRM_64 := true
@@ -108,7 +116,7 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
     $(COMMON_PATH)/framework_compatibility_matrix.xml \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix_legacy.xml \
-    vendor/lineage/config/device_framework_matrix.xml
+    vendor/aosp/config/device_framework_matrix.xml
 DEVICE_MATRIX_FILE := $(COMMON_PATH)/compatibility_matrix.xml
 DEVICE_MANIFEST_FILE := $(COMMON_PATH)/manifest.xml
 
@@ -116,13 +124,26 @@ DEVICE_MANIFEST_FILE := $(COMMON_PATH)/manifest.xml
 TARGET_USES_ION := true
 
 # Partitions
+BOARD_SUPER_PARTITION_BLOCK_DEVICES := odm system vendor
+BOARD_SUPER_PARTITION_ODM_DEVICE_SIZE := 104857600
+BOARD_SUPER_PARTITION_SYSTEM_DEVICE_SIZE := 2998927360
+BOARD_SUPER_PARTITION_VENDOR_DEVICE_SIZE := 1073741824
+BOARD_SUPER_PARTITION_SIZE := 4177526784
+BOARD_SUPER_PARTITION_METADATA_DEVICE := system
+
+BOARD_SUPER_PARTITION_GROUPS := oneplus_dynamic_partitions
+BOARD_ONEPLUS_DYNAMIC_PARTITIONS_SIZE := 4173332480 # Reserve 4MiB for overhead
+BOARD_ONEPLUS_DYNAMIC_PARTITIONS_PARTITION_LIST := odm system vendor
+
 BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864
 BOARD_DTBOIMG_PARTITION_SIZE := 8388608
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2998927360
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 118112366592
-BOARD_VENDORIMAGE_PARTITION_SIZE := 1073741824
-BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4 # Though part of super, often set
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 118112366592 # Userdata is separate
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4 # Though part of super, often set
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
+TARGET_COPY_OUT_ODM := odm
+TARGET_COPY_OUT_SYSTEM := system
 TARGET_COPY_OUT_VENDOR := vendor
 
 # Power
@@ -131,7 +152,7 @@ TARGET_TAP_TO_WAKE_NODE := "/proc/touchpanel/double_tap_enable"
 # Recovery
 BOARD_USES_RECOVERY_AS_BOOT := true
 TARGET_NO_RECOVERY := true
-TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/init/fstab.qcom
+TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/etc/fstab.qcom
 TARGET_RECOVERY_PIXEL_FORMAT := BGRA_8888
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
@@ -143,16 +164,21 @@ ENABLE_VENDOR_RIL_SERVICE := true
 VENDOR_SECURITY_PATCH := 2021-11-01
 
 # Sepolicy
+include device/lineage/sepolicy/libperfmgr/sepolicy.mk
 include device/qcom/sepolicy_vndr/SEPolicy.mk
 
 BOARD_VENDOR_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor
 PRODUCT_PUBLIC_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/public
 PRODUCT_PRIVATE_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/private
 
+# Touch
+SOONG_CONFIG_NAMESPACES += ONEPLUS_LINEAGE_TOUCH_HAL
+SOONG_CONFIG_ONEPLUS_LINEAGE_TOUCH_HAL := INCLUDE_DIR
+SOONG_CONFIG_ONEPLUS_LINEAGE_TOUCH_HAL_INCLUDE_DIR := $(COMMON_PATH)/touch/include
+
 # Verified Boot
 BOARD_AVB_ENABLE := true
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --set_hashtree_disabled_flag
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --set_verification_disabled_flag
+BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 2
 
 # WiFi
 BOARD_WLAN_DEVICE := qcwcn
