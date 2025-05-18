@@ -190,4 +190,4 @@ int gpt_utils_get_partition_map(std::vector<std::string>& partition_list,
 #ifdef __cplusplus
 }
 #endif
-#endif /* __GPT_UTILS_H__ */ 
+#endif /* __GPT_UTILS_H__ */

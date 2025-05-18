@@ -94,4 +94,4 @@ uint32_t sparse_crc32(uint32_t crc_in, const void* buf, size_t size) {
   crc = crc_in ^ ~0U;
   while (size--) crc = crc32_tab[(crc ^ *p++) & 0xFF] ^ (crc >> 8);
   return crc ^ ~0U;
-} 
+}
