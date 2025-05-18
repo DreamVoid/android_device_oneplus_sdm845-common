@@ -53,12 +53,13 @@
 #define __STDC_FORMAT_MACROS
 #endif
 #include <inttypes.h>
+#include <stdlib.h>
+#include "device_gpt_utils.h"
 
 
 #define LOG_TAG "gpt-utils"
 #include <log/log.h>
 #include <cutils/properties.h>
-#include "gpt-utils.h"
 #include <zlib.h>
 #include <endian.h>
 
