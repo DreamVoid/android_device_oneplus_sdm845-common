@@ -19,7 +19,7 @@ BUILD_BROKEN_INCORRECT_PARTITION_IMAGES := true
 
 BOARD_VENDOR := oneplus
 
-COMMON_PATH := $(call my-dir)
+COMMON_PATH := device/oneplus/sdm845-common
 
 # Architecture
 TARGET_ARCH := arm64
