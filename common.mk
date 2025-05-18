@@ -325,6 +325,7 @@ PRODUCT_SOONG_NAMESPACES += \
     hardware/google/pixel \
     hardware/lineage/interfaces/power-libperfmgr \
     hardware/oneplus \
+    hardware/qcom-caf/bootctrl \
     vendor/qcom/opensource/usb/etc
 
 # Telephony
