@@ -136,9 +136,10 @@ BOARD_ONEPLUS_DYNAMIC_PARTITIONS_SIZE := 5163188224 # sum of odm+system+vendor
 BOARD_SUPER_PARTITION_GROUPS := oneplus_dynamic_partitions
 BOARD_ONEPLUS_DYNAMIC_PARTITIONS_PARTITION_LIST := odm system vendor
 
-# Set BOARD_SUPER_PARTITION_SIZE to double the group size to satisfy
-# the check_partition_sizes.py script's "/ 2" check.
-BOARD_SUPER_PARTITION_SIZE := 10326376448 # (sum of logical partitions * 2)
+# Set BOARD_SUPER_PARTITION_SIZE to slightly more than double the group size
+# to satisfy the check_partition_sizes.py script's strict "< / 2" check for groups.
+# (5163188224 * 2) + 4096 = 10326376448 + 4096 = 10326380544
+BOARD_SUPER_PARTITION_SIZE := 10326380544
 
 BOARD_SUPER_PARTITION_METADATA_DEVICE := system
 
