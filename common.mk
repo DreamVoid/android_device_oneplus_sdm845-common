@@ -170,8 +170,10 @@ PRODUCT_PACKAGES += \
     fstab.qcom \
     fstab.qcom.ramdisk \
     init.oem.rc \
+    init.qcom.class_core.sh \
+    init.qcom.early_boot.sh \
+    init.qcom.post_boot.sh \
     init.qcom.rc \
-    init.qcom.power.rc \
     init.qcom.sh \
     init.qcom.usb.rc \
     init.qcom.usb.sh \
@@ -195,8 +197,8 @@ PRODUCT_PACKAGES += \
     gralloc.sdm845 \
     hwcomposer.qcom \
     libtinyxml \
-    memtrack.sdm845 \
     vendor.qti.hardware.display.allocator@1.0-service \
+    vendor.qti.hardware.memtrack-service
 
 # Doze
 PRODUCT_PACKAGES += \
